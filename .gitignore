@@ -5,3 +5,10 @@
 **.out
 **.blg
 git_version.txt
+src/pointingEnv
+src/pointingEnv.o
+src/pointingEnv_git_version.h
+
+
+
+
