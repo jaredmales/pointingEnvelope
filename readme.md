@@ -4,7 +4,7 @@ This repo contains the code for analyzing the allowable pointing PSD envelope to
 
 ## Building the doc
 
-You will need Jared's [gnuplotUtils] (https://github.com/jaredmales/gnuplotUtils) with `GNUPLOT_LIB` configured in the environment variables.
+You will need Jared's [gnuplotUtils](https://github.com/jaredmales/gnuplotUtils) with `GNUPLOT_LIB` configured in the environment variables.
 
 You will need `pdflatex` installed.
 
