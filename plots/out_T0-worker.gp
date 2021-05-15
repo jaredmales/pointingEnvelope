@@ -84,6 +84,8 @@ set mxtics 5
 set grid ytics mytics xtics mxtics
 
 set label 1 T0lab at 1.1,0.45
+set label 4000 "\\tiny{\\input{../git_version.txt}}" at 6.5,0.006
+
 splot fname u 1:(206265 * atan(2.0*($2*1e-9)/D)):3 with pm3d at b t '', fname u 1:(206265 * atan(2.0*($2*1e-9)/D)):3 with labels t ''
 
 #set label 1 T0lab at 1.1,800

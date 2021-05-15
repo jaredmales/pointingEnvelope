@@ -1,7 +1,7 @@
 
-doc: pointingEnv.pdf 
+doc: git_version pointingEnv.pdf 
 
-bib: 
+bib: git_version
 	pdflatex pointingEnv.tex 
 	bibtex pointingEnv.aux
 	pdflatex pointingEnv.tex
@@ -19,6 +19,10 @@ plots = ../plots/out_T0-1kHzComp.pdf \
 pointingEnv.pdf: pointingEnv.tex $(plots)
 	pdflatex pointingEnv.tex
 	
+	
+.PHONY: git_version
+git_version:
+	@bash ../gengitversion.sh ../ ../git_version.txt
 	
 .PHONY: clean
 clean:

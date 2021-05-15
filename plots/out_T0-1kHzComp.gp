@@ -87,6 +87,8 @@ set label 4 '$T_0=30$ sec' at 3.2,0.2 rotate by 50
 set label 5 '$T_0=100$ sec' at 2.75,0.2 rotate by 60
 set label 6 '$T_0=3000$ sec' at 2.2,0.18 rotate by 80
 
+set label 4000 "\\tiny{\\input{../git_version.txt}}" at 6.5,0.006
+
 splot '../output/out_T0-3000.dat' u 1:(206265 * atan(2.0*($2*1e-9)/D)):3 w l t '3000 sec', \
       '../output/out_T0-1000.dat' u 1:(206265 * atan(2.0*($2*1e-9)/D)):3 w l dt 2 t '1000 sec', \
       '../output/out_T0-300.dat' u 1:(206265 * atan(2.0*($2*1e-9)/D)):3 w l dt 2 t '300 sec', \
