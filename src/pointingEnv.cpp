@@ -118,10 +118,7 @@ int main( int argc,
    std::vector<realT> alpha;
    for(realT a = alphaMin; a < alphaMid; a += dalphaMid) alpha.push_back(a);
    for(realT a = alphaMid; a < alphaMax*dalpha*0.99; a*=dalpha) alpha.push_back(a);
-   
-   
-   std::cout << "# T0 = " << T0 << "\n";
-   
+
    std::vector<std::vector<realT>> ofs;
    ofs.resize(alpha.size());
    for(size_t na =0; na < alpha.size(); ++na)
