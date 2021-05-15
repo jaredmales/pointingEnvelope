@@ -1,6 +1,8 @@
 
 #include <vector>
 
+#include <mx/mxlib.hpp>
+
 #include <mx/math/vectorUtils.hpp>
 #include <mx/math/constants.hpp>
 #include <mx/math/gslInterpolation.hpp>
@@ -13,6 +15,8 @@ using namespace mx::sigproc;
 #include <mx/ao/analysis/clGainOpt.hpp>
 #include <mx/ao/analysis/clAOLinearPredictor.hpp>
 using namespace mx::AO::analysis;
+
+#include "pointingEnv_git_version.h"
 
 //#include "../legendreModes.hpp"
 //using namespace mx::sigproc;
@@ -65,7 +69,8 @@ int main( int argc,
       return -1;
    }
    
-   realT T0 = std::stod(argv[1]); //
+   int T0i = std::stoi(argv[1]);
+   realT T0 = T0i; //
    
    std::cerr << "T0 = " << T0 << "\n";
    
@@ -190,13 +195,41 @@ int main( int argc,
       //std::cout << std::endl;
    }
    
+   std::string fnout = "../output/out_T0-";
+   fnout += std::to_string(T0i) + ".dat";
+   
+   std::ofstream fout;
+   fout.open(fnout);
+   
+   fout << "# T0 = " << T0 << "\n";
+   fout << "# mxlib uncomp [";
+   fout << MXLIB_UNCOMP_BRANCH;
+   fout <<  "]: ";
+   fout << MXLIB_UNCOMP_CURRENT_SHA1;
+   if(MXLIB_UNCOMP_REPO_MODIFIED) fout << " (modified)";
+   fout << "\n";
+   
+   fout << "# mxlib comp [";
+   fout << MXLIB_UNCOMP_BRANCH;
+   fout << "]: ";
+   fout << mx::mxlib_comp_current_sha1();
+   if(mx::mxlib_comp_repo_modified()) fout << " (modified)";
+   fout << "\n";
+   
+   fout << "# pointingEnv [";
+   fout << POINTINGENV_GIT_BRANCH;
+   fout << "]: ";
+   fout << POINTINGENV_GIT_CURRENT_SHA1;
+   if(POINTINGENV_GIT_REPO_MODIFIED) fout << " (modified)";
+   fout << "\n";
+   
    for(size_t na =0; na < alpha.size(); ++na)
    {
       for(size_t ns = 0; ns < sig_nm.size(); ++ns)
       {
-         std::cout << alpha[na] << " " << sig_nm[ns] << " " << ofs[na][ns] << "\n";
+         fout << alpha[na] << " " << sig_nm[ns] << " " << ofs[na][ns] << "\n";
       }
-      std::cout << "\n";
+      fout << "\n";
    }
    
    //realT opt_g_lp, opt_var_lp;
