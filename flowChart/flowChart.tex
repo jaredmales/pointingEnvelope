@@ -1,0 +1,109 @@
+\documentclass{article}
+\usepackage[paperwidth=8.5in,paperheight=5in]{geometry}
+\addtolength{\topmargin}{-.5in}
+
+\usepackage[latin1]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows, fit, calc}
+\usetikzlibrary{arrows.meta}
+\hyphenation{disturbances}
+
+\begin{document}
+\pagestyle{empty}
+
+\tikzstyle{block} = [draw, fill=none, rectangle, minimum height=3em, node distance=2cm]
+\tikzstyle{sum} = [draw, fill=none, circle, node distance=2cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+\tikzset{line/.style={draw, -latex'}}
+
+\hspace{-3cm}
+% The block diagram code is probably more verbose than necessary
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+    % We start by placing the blocks
+    
+    \node [block, text width=3cm] (inputWF) {Stellar Wavefront};
+    
+    \node [sum, left of=inputWF, node distance=4cm] (atmoSum) {+};
+    \node [block, left of=atmoSum,  text width=2.5cm] (atmo) {Telescope Pointing};
+    \node [sum, below of=atmoSum, node distance=3cm] (telSum) {+};
+    \node [block, left of=telSum, text width=2.7cm, node distance=5cm] (tel) {Telescope disturbances};
+    \node [sum, below of=telSum] (cpsum) {+};
+    \node [block, thick,left of=cpsum, text width=2.0cm] (cpa) {Coronagraph Jitter};
+
+    
+    \node [sum, right of=cpsum] (inputSum) {+};
+    
+    %\node [block, right of=inputSum] (coron) {Coronagraph};
+    
+    \node [sum, right of=inputSum, label=above:{Lyot Stop}] (beamsplitter) {$\div$};
+    \node [block, right of=beamsplitter, node distance=4cm, label=LLOWFS] (wfs) {$\frac{1 - e^{-sT}}{sT}$};
+
+    \node [sum, right of=wfs] (noise) {+};
+    \node [block, right of=noise, node distance=2cm] (noiseWFS) {WFS Noise};
+    \node [block, above of=wfs, label=Control Law] (controller) {$\frac{\sum_{l=0}^L b_l z^{-l}}{1+\sum_{j=1}^J a_l z^{-j} }$};
+    \node [block, left of=controller, label=Delay] (delay) {$e^{-s\tau}$};
+    \node [block, left of=delay, label=FSM] (dm) {$\frac{1 - e^{-sT}}{sT}$};
+    
+    \node [block,  below of=beamsplitter, text width=1.9cm] (residualWF) {Transmitted Wavefront};
+
+    
+    
+
+    %Post-processing & Science!
+%    \node [block, draw=red, thick, below of=focalplane, text width=1.8cm,node distance=1.5cm] (postproc) {Post-Processing};
+%    \node [block, draw=red, thick, right of=focalplane, text width = 4cm, node distance=6cm] (rvsamp) {RV Sample $M_p\sin(i) \rightarrow R_p, A_g(\lambda), a, \alpha \rightarrow F_p/F_*$};
+%    \node [sum, draw=red, right of=postproc, node distance=2cm] (ppsum) {+};
+    
+%    \node [ellipse, draw=red, thick, right of=ppsum, text width = 3cm, node distance=4.0cm] (yield) {Detections \& Yield};
+    
+%    \draw [->] (focalplane) -- (postproc);
+%    \draw [->] (postproc) -- (ppsum);
+%    \draw [->] (rvsamp) -| (ppsum);
+%    \draw [->] (ppsum) -- (yield);
+
+
+    \draw [->] (inputWF) -- (atmoSum);
+    \draw [dashed,->] (inputWF) -| (noiseWFS);
+    
+    \draw [->] (atmo) -- (atmoSum);
+    \draw [->] (atmoSum) -- (telSum);
+    \draw [->] (tel) -- (telSum);
+    \draw [->] (telSum) -- (cpsum);
+    \draw [->] (cpa) -- (cpsum);
+    \draw [-{Implies},double] (tel) |- (cpa);
+%    \draw [-{Implies},double] (tel) |- (ncpa);
+    \draw [->] (cpsum) -- (inputSum);
+    %\draw [-] (cpsum) -- (inputPSD);
+%     
+    %\draw [draw,->] (inputPSD) -- (inputSum);
+    \draw [draw,->] (inputSum) -- (beamsplitter);
+    \draw [draw,->] (beamsplitter) -- (wfs);
+%     
+%     
+    \draw [draw,->] (wfs) -- (noise);
+    \draw [draw,->] (noiseWFS) -- (noise);
+    \draw [draw,->] (noise) |- (controller);
+    \draw [->] (controller) -- (delay);
+    \draw [->] (delay) -- (dm);
+%     
+     \draw [->] (dm) -| node[pos=0.95] {$-$}  (inputSum);
+%     
+     \draw [->] (beamsplitter) -- (residualWF);
+%     
+%     \draw [->] (residualWF) -- (ncpaSum);
+%     \draw [->] (ncpa) -- (ncpaSum);
+%     \draw [->] (ncpaSum) -- (dmncpcSum);
+%     \draw [->] (dmncpcSum) -- (coronagraph);
+
+    %lowfs Loop
+
+    %\draw [->] (fpwfs) -- (lofpSum);
+    
+    
+    %\node [draw=black, dash dot, thick, fit = (inputSum) (noise) (controller) (dm) (noiseWFS), inner sep=0.5cm, label=above:{High Order Loop (Males \& Guyon, 2018)}] {};
+    %\node [draw=black, dash dot, thick, fit = (atmo) (atmoSum) (inputWF), inner sep=0.5cm] {};
+\end{tikzpicture}
+
+\end{document}

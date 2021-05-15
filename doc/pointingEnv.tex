@@ -1,0 +1,229 @@
+\documentclass[10pt,preprint]{aastex631}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{mathrsfs}
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+
+\usepackage[]{graphicx, epstopdf}
+\graphicspath{{Figures/}}
+
+%\usepackage{indentfirst}
+%\usepackage{lscape}
+\usepackage{afterpage}
+%\usepackage{rotating}
+\let\captionbox\undefined
+%\usepackage{caption}
+
+\usepackage{datetime2}
+
+%\captionsetup{width=6.3in,font=footnotesize}
+%\usepackage{wrapfig}
+%\usepackage{multicol}
+%\usepackage{textcomp}
+\newcommand{\textapprox}{\raisebox{0.5ex}{\texttildelow}}
+
+% custom commands for Jared's changes
+%\usepackage{ulem}
+%\newcommand{\jrmadd}[1]{\textcolor{blue}{#1}}
+%\newcommand{\jrmrmv}[1]{\textcolor{blue}{\sout{#1}}}
+
+% custom commands for Olivier's comments
+%\usepackage{ulem}
+%\newcommand{\ogadd}[1]{\textcolor{orange}{#1}}
+%\newcommand{\ogrmv}[1]{\textcolor{orange}{\sout{#1}}}
+
+% custom commends for Mike's comments
+%\definecolor{avocado}{rgb}{0.34,0.51,0.01}
+%\newcommand{\mpfadd}[1]{\textcolor{avocado}{#1}}
+%\newcommand{\mpfrmv}[1]{\textcolor{avocado}{\sout{#1}}}
+
+%\usepackage{multirow}
+
+%\usepackage{xcolor}
+%\usepackage{ulem}
+
+%\usepackage{soul}
+
+%\setlength{\textwidth}{6.5in}
+%\setlength{\hoffset}{0in}
+%\setlength{\oddsidemargin}{0in}
+%\setlength{\evensidemargin}{0in}
+
+%\setlength{\textheight}{9.in}
+%\setlength{\voffset}{0in}
+%\setlength{\topmargin}{0in}
+%\setlength{\headsep}{0.25in}
+%\setlength{\headheight}{0in}
+
+
+%Some handy-dandy commands
+%***Distance and Length***
+\newcommand{\meters}{\mbox{m}}
+\newcommand{\cm}{\mbox{cm}}
+\newcommand{\km}{\mbox{km}}
+\newcommand{\dpc}{d_{pc}}
+\newcommand{\au}{\mbox{AU}}
+\newcommand{\microns}{\mu\mbox{m}}
+\newcommand{\rsun}{R_{\sun}}
+\newcommand{\rjup}{R_J}
+\newcommand{\rearth}{R_{\earth}}
+
+%***Times***
+\newcommand{\hours}{\mbox{ hrs}}
+\newcommand{\seconds}{\mbox{ s}}
+\newcommand{\years}{\mbox{ yrs}}
+
+%**Mass**
+\newcommand{\kg}{\mbox{kg}}
+\newcommand{\msun}{M_{\sun}}
+\newcommand{\mearth}{M_{\earth}}
+\newcommand{\mjup}{M_J}
+
+
+
+\newcommand{\lambdasci}{\lambda_\mathrm{sci}}
+\newcommand{\lambdawfs}{\lambda_\mathrm{wfs}}
+\newcommand{\tautd}{\tau_\mathrm{td}}
+\newcommand{\tauwfs}{\tau_\mathrm{wfs}}
+\newcommand{\dopt}{d_\mathrm{opt}}
+\newcommand{\mmax}{m_\mathrm{max}}
+\newcommand{\nmax}{n_\mathrm{max}}
+\newcommand{\Ji}{\mathrm{Ji}}
+\newcommand{\pone}{ {\scalebox{0.6}{+1}}}
+\newcommand{\mone}{ {\scalebox{0.6}{-1}} }
+
+\newcommand{\karman}{K\'{a}rm\'{a}n }
+
+
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+\newcommand{\argmin}{\operatornamewithlimits{argmin}}
+
+
+
+% Alter some LaTeX defaults for better treatment of figures:
+    % See p.105 of "TeX Unbound" for suggested values.
+    % See pp. 199-200 of Lamport's "LaTeX" book for details.
+    %   General parameters, for ALL pages:
+    \renewcommand{\topfraction}{0.9}    % max fraction of floats at top
+    \renewcommand{\bottomfraction}{0.8} % max fraction of floats at bottom
+    %   Parameters for TEXT pages (not float pages):
+    \setcounter{topnumber}{2}
+    \setcounter{bottomnumber}{2}
+    \setcounter{totalnumber}{4}     % 2 may work better
+    \setcounter{dbltopnumber}{2}    % for 2-column pages
+    \renewcommand{\dbltopfraction}{0.9} % fit big float above 2-col. text
+    \renewcommand{\textfraction}{0.07}  % allow minimal text w. figs
+    %   Parameters for FLOAT pages (not text pages):
+    \renewcommand{\floatpagefraction}{0.7}      % require fuller float pages
+        % N.B.: floatpagefraction MUST be less than topfraction !!
+    \renewcommand{\dblfloatpagefraction}{0.7}   % require fuller float pages
+
+
+
+
+
+\begin{document}
+
+\title{STP Coronagraph Pointing Control Envelope PSD Estimates}
+
+\author{Jared R. Males}
+\author{Ewan S. Douglas}
+
+\begin{abstract}
+Last updated \DTMnow.
+\end{abstract}
+
+\section{Control Model}
+
+Some key assumptions are:
+\begin{itemize}
+\item a closed-loop feedback system with simple integrator control law, with gain optimized as in \citet{2018JATIS...4a9001M}. 
+\item FSM has negligible dynamics, and can be modeled as a sample-and-hold at relevant frequencies
+\item Loop delay $\tau$ (excluding detector and FSM sample-and-hold) is twice the sampling frequency.
+\item Lyot Low-Order WFS (LLOWFS) uses light rejected from the Lyot stop.
+\item 32 x 32 pixel detector region
+\item 2 $e^-$ readout noise
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width=6.5in]{../flowChart/flowChart.pdf}
+\vspace{-3cm}
+\caption{Lyot Low-Order WFS based control flow.  Note that ``telescope disturbances'' are not explicitly modeled, but the input pointing PSDs should be assumed to model the combined effect of pointing and onboard jitter.  The FSM is modeled as a simple sample-and-hold, no other dynamics are included.  The loop delay was always set to twice the WFS exposure time.  \label{fig:flowChart}}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=3.5in]{effective_QE.pdf}
+\caption{Model of throughput to coronagraph focal plane. For control analysis we assume 50\% of the rejected light of the star is available for WFS.  For $\alpha$ Cen A, in a 60 nm bandpass at 600 nm, this yields $5.12\times10^{9}$ photon/sec. \label{fig:QE}}
+\end{figure}
+\afterpage{\clearpage}
+
+\section{Input PSDs}
+
+PSDs are modeled using the von Ka'rman model as in \citet{2019AJ....157...36D}.  The three parameters studied here are the integrated variance, the knee frequency ($T_0$) and the PSD slope $\alpha$.  Todo: add equation and plots.
+
+Larger $T_0$ can be thought of as a long-slow drift, whereas smaller $T_0$ will produce rapid stochastic fluctuations.  Larger $\alpha$ produce stronger correlations at frequencies higher than $1/T_0$, which provides for more control effectiveness.  Smaller $\alpha$ processes are harder to control.
+
+\section{Results}
+
+A grid sweep analysis is conducted, where an input disturbance rms, a PSD slope $\alpha$, and a PSD knee frequency $T_0$ are chosen, and then a range of loop frequencies are tested.  At each loop frequency, gain is optimized, and then the lowest loop frequency needed to obtain 1 nm rms single-axis jitter at the coronagraph focal plane is recorded.  
+
+\begin{figure}
+\centering
+\includegraphics[width=6.5in]{../plots/out_T0-1kHzComp.pdf}
+\caption{Contours showing which combination of PSD parameters require 1 kHz control loop frequency to achieve 1 nm rms jitter at the coronagraph FSM (one-axis) as a function of input pointing error, PSD $\alpha$, and knee-frequency $T_0$. For a given $T_0$ value, PSDs below and to the right of curve will allow slower loop speeds.  This is shown in subsequent plots.  \label{fig:T0-1kHzComp}}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=6.5in]{../plots/out_T0-3000.pdf}
+\caption{Map of loop frequencies required to achieve 1 nm rms jitter at the coronagraph FSM (one-axis) as a function of input pointing error and PSD $\alpha$, for knee-frequency $T_0 = 3000$ sec.  \label{fig:T0-3000}}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=6.5in]{../plots/out_T0-1000.pdf}
+\caption{Map of loop frequencies required to achieve 1 nm rms jitter at the coronagraph FSM (one-axis) as a function of input pointing error and PSD $\alpha$, for knee-frequency $T_0 = 1000$ sec.  \label{fig:T0-1000}}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=6.5in]{../plots/out_T0-300.pdf}
+\caption{Map of loop frequencies required to achieve 1 nm rms jitter at the coronagraph FSM (one-axis) as a function of input pointing error and PSD $\alpha$, for knee-frequency $T_0 = 300$ sec.  \label{fig:T0-300}}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=6.5in]{../plots/out_T0-100.pdf}
+\caption{Map of loop frequencies required to achieve 1 nm rms jitter at the coronagraph FSM (one-axis) as a function of input pointing error and PSD $\alpha$, for knee-frequency $T_0 = 100$ sec.  \label{fig:T0-100}}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=6.5in]{../plots/out_T0-30.pdf}
+\caption{Map of loop frequencies required to achieve 1 nm rms jitter at the coronagraph FSM (one-axis) as a function of input pointing error and PSD $\alpha$, for knee-frequency $T_0 = 30$ sec.  \label{fig:T0-30}}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=6.5in]{../plots/out_T0-10.pdf}
+\caption{Map of loop frequencies required to achieve 1 nm rms jitter at the coronagraph FSM (one-axis) as a function of input pointing error and PSD $\alpha$, for knee-frequency $T_0 = 10$ sec.  \label{fig:T0-10}}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=6.5in]{../plots/out_T0-1.pdf}
+\caption{Map of loop frequencies required to achieve 1 nm rms jitter at the coronagraph FSM (one-axis) as a function of input pointing error and PSD $\alpha$, for knee-frequency $T_0 = 1$ sec.  \label{fig:T0-1}}
+\end{figure}
+
+
+\section{Caveats}
+
+\begin{itemize}
+\item resonances/peaks/poles/harmonic-vibrations will reduce temporal bandwidth, but higher order (predictive) filters can be used.  \\
+\end{itemize}
+
+\bibliographystyle{apj}
+\bibliography{pointingEnv}
+
+\end{document}
