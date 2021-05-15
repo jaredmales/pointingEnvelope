@@ -25,7 +25,7 @@ fi
 GIT_HEADER="$HEADPATH"
 
 GIT_BRANCH=$(git --git-dir=$GITPATH/.git --work-tree=$GITPATH rev-parse --abbrev-ref HEAD)
-GIT_VERSION=$(git --git-dir=$GITPATH/.git --work-tree=$GITPATH log --format=%h)
+GIT_VERSION=$(git --git-dir=$GITPATH/.git --work-tree=$GITPATH log -1 --format=%h)
 
 set +e
 git --git-dir=$GITPATH/.git --work-tree=$GITPATH diff-index --quiet HEAD --
