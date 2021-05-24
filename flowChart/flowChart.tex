@@ -37,11 +37,11 @@
     
     %\node [block, right of=inputSum] (coron) {Coronagraph};
     
-    \node [sum, right of=inputSum, label=above:{Lyot Stop}] (beamsplitter) {$\div$};
-    \node [block, right of=beamsplitter, node distance=4cm, label=LLOWFS] (wfs) {$\frac{1 - e^{-sT}}{sT}$};
+    \node [sum, right of=inputSum, label=above:{Pol. BS}] (beamsplitter) {$\div$};
+    \node [block, right of=beamsplitter, node distance=4cm, label=Angle Tracker] (wfs) {$\frac{1 - e^{-sT}}{sT}$};
 
     \node [sum, right of=wfs] (noise) {+};
-    \node [block, right of=noise, node distance=2cm] (noiseWFS) {WFS Noise};
+    \node [block, right of=noise, node distance=2cm] (noiseWFS) {AT Noise};
     \node [block, above of=wfs, label=Control Law] (controller) {$\frac{\sum_{l=0}^L b_l z^{-l}}{1+\sum_{j=1}^J a_l z^{-j} }$};
     \node [block, left of=controller, label=Delay] (delay) {$e^{-s\tau}$};
     \node [block, left of=delay, label=FSM] (dm) {$\frac{1 - e^{-sT}}{sT}$};
