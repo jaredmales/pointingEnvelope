@@ -85,7 +85,7 @@ int main( int argc,
    realT lambda = 615.0;
    realT Fg = 7.92909e+16*1.10786e-7*0.25*3.14159*pow(3,2); //photons/sec at primary mirror
    //and info from Kian:
-   Fg = Fg * 0.06 /*throughput*/ * 0.75 /*lyot stop capture*/ * 0.06 /*QE*/;
+   Fg = Fg * 0.06 /*throughput*/ * 0.75 /*lyot stop capture*/ * 0.8 /*QE*/;
 
    realT beta_p = 2.0; //Bad Zernike, to-do: what is beta_p of LLOWFS?
    long npix = 1692; //number of pixels from Kian
