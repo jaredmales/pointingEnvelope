@@ -48,7 +48,7 @@ int psdRun( std::vector<realT> & psd,
 
    psd.resize(freq.size());
 
-   vonKarmanPSD(psd, freq, 1.0, T0, t0, alpha);
+   vonKarmanPSD(psd, freq, alpha, T0, t0, 1.0);
 
    normPSD(psd, freq, pow(sig_nm*two_pi<realT>()/lambda,2), 1./Tint);
 
