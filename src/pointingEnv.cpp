@@ -209,7 +209,7 @@ int main( int argc,
    omplw.outputFinalStatus();
    std::cerr << '\n';
 
-   std::string fnout = "../output/out_T0-";
+   std::string fnout = "../output/3m10nm/out_T0-";
    fnout += std::to_string(T0i) + ".dat";
 
    std::ofstream fout;
