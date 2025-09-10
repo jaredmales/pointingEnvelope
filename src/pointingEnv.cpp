@@ -78,7 +78,7 @@ int main( int argc,
    int T0i = std::stoi(argv[1]);
    realT T0 = T0i; //
 
-   realT mag = stoT<realT>(argv[2]);
+   realT mag = std::stod(argv[2]);
 
    std::string subdir = argv[3];
 
