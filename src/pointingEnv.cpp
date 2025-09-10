@@ -1,7 +1,9 @@
 
 #include <vector>
 
-#include <mx/mxlib.hpp>
+#include <mx/ioutils/fileUtils.hpp>
+#include <mx/ioutils/stringUtils.hpp>
+using namespace mx::ioutils;
 
 #include <mx/math/vectorUtils.hpp>
 #include <mx/math/constants.hpp>
@@ -50,6 +52,7 @@ int psdRun( std::vector<realT> & psd,
 
    vonKarmanPSD(psd, freq, alpha, T0, t0, 1.0);
 
+   //Converts nm of WFE to radians
    normPSD(psd, freq, pow(sig_nm*two_pi<realT>()/lambda,2), 1./Tint);
 
    psd_n.resize(freq.size());
@@ -66,18 +69,25 @@ int main( int argc,
 {
    typedef double realT;
 
-   if(argc < 2)
+   if(argc < 4)
    {
-      std::cerr << "Not enough args\n";
+      std::cerr << "Not enough args.  Must give T0, mag, and subdir.\n";
       return -1;
    }
 
    int T0i = std::stoi(argv[1]);
    realT T0 = T0i; //
 
+   realT mag = stoT<realT>(argv[2]);
+
+   std::string subdir = argv[3];
+
+
    std::cerr << "T0 = " << T0 << "\n";
 
    realT t0 = 0.0;
+
+   realT servo_lag = 2.0; //frames
 
    realT ron = 2.0;
 
@@ -86,6 +96,8 @@ int main( int argc,
    realT Fg = 7.92909e+16*1.10786e-7*0.25*3.14159*pow(3,2); //photons/sec at primary mirror
    //and info from Kian:
    Fg = Fg * 0.06 /*throughput*/ * 0.75 /*lyot stop capture*/ * 0.8 /*QE*/;
+
+   Fg = Fg*pow(10., -0.4*mag);
 
    realT beta_p = 2.0; //Bad Zernike, to-do: what is beta_p of LLOWFS?
    long npix = 1692; //number of pixels from Kian
@@ -109,6 +121,7 @@ int main( int argc,
 
    //--------------------------
    //Create sig_nm grid
+   // These are nm rms wavefront
    realT sigMin = pow(2, 0.25);
    realT sigMax = 4000.;
    realT dsig = pow(2, 0.25);
@@ -122,7 +135,7 @@ int main( int argc,
    realT alphaMid = 2.9;
    realT alphaMax = 6.0;
    realT dalphaMid = 0.1;
-   realT dalpha = pow(2, 0.25);
+   realT dalpha = pow(2, 1.0/16.);
 
    std::vector<realT> alpha;
    for(realT a = alphaMin; a < alphaMid; a += dalphaMid) alpha.push_back(a);
@@ -158,8 +171,10 @@ int main( int argc,
       {
          for(size_t n=0; n< fs.size(); ++n)
          {
-            realT tau = 2.0/fs[n];
+            realT tau = servo_lag/fs[n];
             psdRun(psd_ol, psd_n, freq, fs[n], T0, t0, alpha[na], sig_nm[ns], lambda, beta_p, Fg, npix, ron);
+
+            //At this point we have PSDs in radians normalized to the sig_nm input rms
 
             clGainOpt<realT> gopt(1.0/fs[n], tau);
             gopt.f(freq);
@@ -209,7 +224,9 @@ int main( int argc,
    omplw.outputFinalStatus();
    std::cerr << '\n';
 
-   std::string fnout = "../output/3m10nm/out_T0-";
+   mx::ioutils::createDirectories("../output/" + subdir);
+
+   std::string fnout = "../output/" + subdir + "/out_T0-";
    fnout += std::to_string(T0i) + ".dat";
 
    std::ofstream fout;
